@@ -6,10 +6,21 @@ require("dotenv").config();
 const authRoutes = require("./routes/authRoutes");
 
 const app = express();
-
+const allowedOrigins = [
+  "http://localhost:3000", // dev
+  "http://192.168.29.80:3000", // your current local network frontend
+  "https://codeandrun.in", // production frontend
+];
 // Middleware
 app.use(express.json());
 app.use(cors());
+
+app.use(
+  cors({
+    origin: allowedOrigins,
+    credentials: true,
+  })
+);
 
 // Database Connection
 mongoose
