@@ -5,8 +5,7 @@ const User = require("../models/User");
 const router = express.Router();
 
 // Email, Phone & Password Validation Regex
-const emailRegex =
-  /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.(com|net|org|edu|gov|mil|in|co|io|tech)$/;
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const phoneRegex = /^[0-9]{10}$/;
 const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@*.])[A-Za-z\d@*.]{8,16}$/;
 
@@ -71,12 +70,16 @@ router.post("/login", async (req, res) => {
     });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ message: "The details you are entered are incorrect." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "Invalid credentials." });
+      return res
+        .status(401)
+        .json({ message: "The details you are entered are incorrect." });
     }
 
     res.status(200).json({ message: "Login successful", userId: user._id });
