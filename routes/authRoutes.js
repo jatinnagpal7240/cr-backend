@@ -72,14 +72,14 @@ router.post("/login", async (req, res) => {
     if (!user) {
       return res
         .status(401)
-        .json({ message: "The details you are entered are incorrect." });
+        .json({ message: "The details you entered are incorrect." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res
         .status(401)
-        .json({ message: "The details you are entered are incorrect." });
+        .json({ message: "The details you entered are incorrect." });
     }
 
     res.status(200).json({ message: "Login successful", userId: user._id });
