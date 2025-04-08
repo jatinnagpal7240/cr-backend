@@ -22,35 +22,28 @@ router.post("/signup", async (req, res) => {
   }
 
   if (!passwordRegex.test(password)) {
-    return res.status(400).json({
-      message:
-        "Password must be 8-16 characters with 1 uppercase, 1 digit, and 1 special character (@ * .)",
-    });
+    return res
+      .status(400)
+      .json({ message: "Password must meet complexity rules." });
   }
 
   try {
     const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
-
     if (existingUser) {
       return res
-        .status(400)
-        .json({ message: "Email or phone number already exists." });
+        .status(409)
+        .json({ message: "User already exists with this email or phone." });
     }
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newUser = new User({
-      phone,
-      email,
-      password: hashedPassword,
-    });
+    await User.create({ phone, email, password: hashedPassword });
+    console.log("Signup successful");
 
-    await newUser.save();
-    res.status(201).json({ message: "User registered successfully!" });
+    res.status(201).json({ message: "Signup successful" });
   } catch (error) {
-    console.error("Signup Error:", error);
-    res.status(500).json({ message: "Server error. Please try again." });
+    console.error("Signup error:", error);
+    res.status(500).json({ message: "Server error during signup." });
   }
 });
 
@@ -82,7 +75,7 @@ router.post("/login", async (req, res) => {
         .json({ message: "The details you entered are incorrect." });
     }
 
-    res.status(200).json({ message: "Login successful", userId: user._id });
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     console.error("Login Error:", error);
     res.status(500).json({ message: "Server error." });
