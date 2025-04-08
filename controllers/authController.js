@@ -15,7 +15,7 @@ const setTokenCookie = (res, token) => {
   res.cookie("authToken", token, {
     httpOnly: true,
     // secure: process.env.NODE_ENV === "production", // true on prod
-    secure: false,
+    secure: true,
     sameSite: "None", // Crucial for cross site
     maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
   });
