@@ -16,6 +16,7 @@ console.log("Current NODE_ENV:", process.env.NODE_ENV);
 const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.29.80:3000",
+  "https://www.codeandrun.in",
   "https://codeandrun.in",
 ];
 
@@ -30,6 +31,7 @@ app.use(
       if (!origin || allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
+        console.log("Blocked by CORS:", origin);
         callback(new Error("Not allowed by CORS"));
       }
     },

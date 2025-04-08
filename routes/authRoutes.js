@@ -1,7 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-
+const jwt = require("jsonwebtoken");
 const router = express.Router();
 
 // Email, Phone & Password Validation Regex
@@ -74,6 +74,21 @@ router.post("/login", async (req, res) => {
         .status(401)
         .json({ message: "The details you entered are incorrect." });
     }
+
+    // ✅ Generate JWT Token
+    const token = jwt.sign(
+      { userId: user._id },
+      process.env.JWT_SECRET || "supersecret", // Replace in production
+      { expiresIn: "7d" }
+    );
+
+    // ✅ Set token cookie with correct flags
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: true, // Required for cross-site HTTPS
+      sameSite: "None", // Required for cross-origin
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
 
     res.status(200).json({ message: "Login successful" });
   } catch (error) {
