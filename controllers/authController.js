@@ -16,7 +16,7 @@ const setTokenCookie = (res, token) => {
     httpOnly: true,
     // secure: process.env.NODE_ENV === "production", // true on prod
     secure: false,
-    sameSite: "Lax", // More relaxed for development
+    sameSite: "None", // Crucial for cross site
     maxAge: 1000 * 60 * 60 * 24 * 365, // 1 year
   });
   return res.status(200).json({ message: "Login successful" });
