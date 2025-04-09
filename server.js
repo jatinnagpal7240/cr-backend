@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const cors = require("cors");
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
@@ -21,10 +21,6 @@ const allowedOrigins = [
   "https://codeandrun.in",
 ];
 
-// Middleware
-app.use(express.json());
-app.use(cookieParser());
-
 // ✅ Correct CORS setup for cookies
 app.use(
   cors({
@@ -39,6 +35,9 @@ app.use(
     credentials: true,
   })
 );
+// Middleware
+app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api", authRoutes);

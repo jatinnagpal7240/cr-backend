@@ -8,11 +8,16 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 router.get("/verify", async (req, res) => {
   try {
     console.log("Cookies received:", req.cookies);
-    const token = req.cookies.authToken;
+    const token = req.cookies.token;
+
+    // 🔍 Added debug logs
+    console.log("Cookies received:", req.cookies);
+    console.log("Token received:", token);
+
     if (!token) return res.status(401).json({ message: "No token" });
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findById(decoded.userId).select("-password");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
