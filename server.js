@@ -17,6 +17,7 @@ const allowedOrigins = [
   "http://localhost:3000",
   "http://192.168.29.80:3000",
   "https://www.codeandrun.in",
+  "https://your-vercel-domain.vercel.app",
   "https://codeandrun.in",
 ];
 
