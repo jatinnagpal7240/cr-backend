@@ -7,6 +7,7 @@ const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 router.get("/verify", async (req, res) => {
   try {
+    console.log("Cookies received:", req.cookies);
     const token = req.cookies.authToken;
     if (!token) return res.status(401).json({ message: "No token" });
 
