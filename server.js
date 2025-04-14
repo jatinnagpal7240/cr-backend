@@ -6,6 +6,7 @@ require("dotenv").config();
 
 const authRoutes = require("./routes/authRoutes");
 const sessionRoutes = require("./routes/sessionRoutes");
+const usernameRoutes = require("./routes/usernameRoutes");
 
 const app = express();
 
@@ -42,6 +43,7 @@ app.use(cookieParser());
 // Routes
 app.use("/api", authRoutes);
 app.use("/api/session", sessionRoutes);
+app.use("/api/username", usernameRoutes);
 
 // Database Connection
 mongoose
