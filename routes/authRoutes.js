@@ -28,17 +28,24 @@ router.post("/signup", async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
+    const existingUser = await User.findOne({
+      $or: [{ email }, { phone }],
+    });
+
     if (existingUser) {
-      return res
-        .status(409)
-        .json({ message: "User already exists with this email or phone." });
+      return res.status(409).json({
+        message: "User already exists with this email or phone.",
+      });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    await User.create({ phone, email, password: hashedPassword });
-    console.log("Signup successful");
+    await User.create({
+      phone,
+      email,
+      password: hashedPassword,
+      username: null,
+    });
 
     res.status(201).json({ message: "Signup successful" });
   } catch (error) {
