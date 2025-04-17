@@ -28,30 +28,20 @@ router.post("/signup", async (req, res) => {
   }
 
   try {
-    const existingUser = await User.findOne({
-      $or: [{ email }, { phone }],
-    });
-
+    const existingUser = await User.findOne({ $or: [{ email }, { phone }] });
     if (existingUser) {
-      return res.status(409).json({
-        message: "User already exists with this email or phone.",
-      });
+      return res
+        .status(409)
+        .json({ message: "User already exists with this email or phone." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     await User.create({ phone, email, password: hashedPassword });
+    console.log("Signup successful");
 
     res.status(201).json({ message: "Signup successful" });
   } catch (error) {
-    if (error.code === 11000) {
-      // Mongo duplicate key error
-      const field = Object.keys(error.keyValue)[0];
-      return res.status(409).json({
-        message: `An account already exists with this ${field}.`,
-      });
-    }
-
     console.error("Signup error:", error);
     res.status(500).json({ message: "Server error during signup." });
   }
