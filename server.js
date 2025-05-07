@@ -23,6 +23,7 @@ const allowedOrigins = [
   "https://www.codeandrun.in",
   "https://cr-frontend-eight.vercel.app",
   "https://codeandrun.in",
+  "https://admin.codeandrun.in",
 ];
 
 // ✅ CORS setup for cookies
