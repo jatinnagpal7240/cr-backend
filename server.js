@@ -9,6 +9,7 @@ const sessionRoutes = require("./routes/sessionRoutes");
 const usernameRoutes = require("./routes/usernameRoutes");
 const otpRoutes = require("./routes/otpRoutes");
 const verifyEmailOtp = require("./routes/otp/email/verify"); // ✅ Fixed the import!
+const certificateRoutes = require("./routes/certificateRoutes");
 
 const app = express();
 
@@ -48,6 +49,7 @@ app.use("/api", authRoutes);
 app.use("/api/session", sessionRoutes);
 app.use("/api/username", usernameRoutes);
 app.use("/api/otp", otpRoutes);
+app.use("/api/certificates", certificateRoutes);
 
 // Special OTP Verify Route (direct mount)
 app.post("/api/otp/email/verify", verifyEmailOtp);
