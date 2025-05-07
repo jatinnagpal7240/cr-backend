@@ -6,6 +6,7 @@ const uploadCertificate = async (req, res) => {
     const { email, course } = req.body;
 
     if (!email || !course || !req.file?.path) {
+      console.warn("Missing fields:", { email, course, file: req.file });
       return res.status(400).json({ message: "Missing required fields" });
     }
 
@@ -19,8 +20,9 @@ const uploadCertificate = async (req, res) => {
 
     res.status(200).json({ message: "Certificate uploaded", certificate });
   } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ message: "Server error" });
+    console.error("Upload error:", error.message);
+    console.error("Full error:", error);
+    res.status(500).json({ message: error.message || "Server error" });
   }
 };
 
