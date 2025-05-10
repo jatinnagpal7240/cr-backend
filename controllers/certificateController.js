@@ -46,4 +46,23 @@ const getCertificateByEmailAndCourse = async (req, res) => {
   }
 };
 
-module.exports = { uploadCertificate, getCertificateByEmailAndCourse };
+// ✅ New controller to get all certificates of the logged-in user
+const getUserCertificates = async (req, res) => {
+  try {
+    const userEmail = req.user.email; // This comes from your auth middleware
+    const certificates = await Certificate.find({ email: userEmail }).sort({
+      date: -1,
+    });
+
+    res.status(200).json({ certificates });
+  } catch (error) {
+    console.error("Fetch user certificates error:", error);
+    res.status(500).json({ message: "Failed to fetch user certificates" });
+  }
+};
+
+module.exports = {
+  uploadCertificate,
+  getCertificateByEmailAndCourse,
+  getUserCertificates, // ✅ Export the new controller
+};
