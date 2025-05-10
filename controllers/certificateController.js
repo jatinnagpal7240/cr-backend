@@ -49,9 +49,14 @@ const getCertificateByEmailAndCourse = async (req, res) => {
 // ✅ New controller to get all certificates of the logged-in user
 const getUserCertificates = async (req, res) => {
   try {
-    const userEmail = req.user.email; // This comes from your auth middleware
+    const userEmail = req.user.email;
+
+    if (!userEmail) {
+      return res.status(400).json({ message: "Email missing in session" });
+    }
+
     const certificates = await Certificate.find({ email: userEmail }).sort({
-      date: -1,
+      uploadedAt: -1, // ✅ correct field
     });
 
     res.status(200).json({ certificates });

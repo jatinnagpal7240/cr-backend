@@ -1,6 +1,8 @@
+// middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
+const User = require("../models/User"); // Ensure this is imported
 
-const protect = (req, res, next) => {
+const protect = async (req, res, next) => {
   const token = req.cookies.token;
 
   if (!token) {
@@ -9,7 +11,15 @@ const protect = (req, res, next) => {
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = { id: decoded.id, email: decoded.email }; // Ensure email is in the token
+    const user = await User.findById(decoded.id).select("email _id");
+
+    if (!user) {
+      return res
+        .status(401)
+        .json({ message: "Not authorized, user not found" });
+    }
+
+    req.user = user; // ✅ attaches full user (with email)
     next();
   } catch (error) {
     return res.status(401).json({ message: "Not authorized, token failed" });
