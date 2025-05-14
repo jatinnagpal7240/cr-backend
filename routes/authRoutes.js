@@ -1,9 +1,10 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
-const jwt = require("jsonwebtoken");
+// const jwt = require("jsonwebtoken");
 const router = express.Router();
 const { setTokenCookie } = require("../controllers/authController");
+const { generateToken } = require("../controllers/authController");
 
 // Email, Phone & Password Validation Regex
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -65,7 +66,7 @@ router.post("/login", async (req, res) => {
         { phone: identifier },
         { username: identifier },
       ],
-    }).select("+password"); // Important for password comparison
+    }).select("+password");
 
     if (!user) {
       return res
@@ -80,14 +81,8 @@ router.post("/login", async (req, res) => {
         .json({ message: "The details you entered are incorrect." });
     }
 
-    const token = jwt.sign(
-      { id: user._id }, // Changed from userId to id to match verification
-      process.env.JWT_SECRET || "supersecret",
-      { expiresIn: "7d" }
-    );
-
-    // Return the setTokenCookie response directly
-    return setTokenCookie(res, token, user);
+    const token = generateToken(user); // ✅ Pass full user
+    return setTokenCookie(res, token, user); // ✅ Done
   } catch (error) {
     console.error("Login Error:", error);
     return res.status(500).json({ message: "Server error." });

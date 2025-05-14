@@ -11,20 +11,19 @@ router.get("/verify", async (req, res) => {
   try {
     const token = req.cookies.token;
 
-    console.log("Cookies received:", req.cookies);
-    console.log("Token received:", token);
-
     if (!token) return res.status(401).json({ message: "No token" });
 
     const decoded = jwt.verify(token, JWT_SECRET);
-    const user = await User.findById(decoded.id).select("-password"); // ✅ Fix here
+    const user = await User.findById(decoded.id).select("-password");
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ user });
+    return res.status(200).json({ user }); // ✅ Only one response sent
   } catch (err) {
     console.error("Session verify error:", err.message);
-    res.status(401).json({ message: "Invalid or expired token" });
+    if (!res.headersSent) {
+      return res.status(401).json({ message: "Invalid or expired token" });
+    }
   }
 });
 

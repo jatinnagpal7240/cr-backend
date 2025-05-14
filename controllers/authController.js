@@ -7,9 +7,9 @@ const JWT_SECRET = process.env.JWT_SECRET;
 if (!JWT_SECRET) throw new Error("JWT_SECRET is not defined");
 
 // Generate JWT token
-const generateToken = (userId) => {
-  return jwt.sign({ id: userId }, JWT_SECRET, {
-    expiresIn: "365d", // 1 year
+const generateToken = (user) => {
+  return jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+    expiresIn: "365d",
   });
 };
 
@@ -50,7 +50,7 @@ const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid credentials." });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user);
     return setTokenCookie(res, token, user);
   } catch (err) {
     console.error(err);
@@ -95,7 +95,7 @@ const registerUser = async (req, res) => {
 
     await EmailOtp.deleteOne({ email }); // Clean up OTP after signup
 
-    const token = generateToken(newUser._id);
+    const token = generateToken(newUser);
     return setTokenCookie(res, token, newUser);
   } catch (err) {
     console.error(err);
@@ -107,4 +107,17 @@ module.exports = {
   loginUser,
   registerUser,
   setTokenCookie,
+  generateToken,
 };
+
+/**
+ * ✅ JWT Auth Standardization Note
+ *
+ * All tokens are now generated with a consistent payload: { id: user._id }
+ * This ensures:
+ * - Uniform decoding across the app (e.g., req.cookies.token, getSession, /api/session/verify)
+ * - Fewer bugs when accessing user data (decoded.id always works)
+ * - Future-proofing for features like profile editing, token refresh, or role-based auth
+ *
+ * 🔒 Reminder: Keep only minimal safe user data in tokens to maintain security.
+ */
