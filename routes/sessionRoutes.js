@@ -18,7 +18,7 @@ router.get("/verify", async (req, res) => {
 
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    return res.status(200).json({ user }); // ✅ Only one response sent
+    return res.status(200).json({ success: true, user }); // ✅ Only one response sent
   } catch (err) {
     console.error("Session verify error:", err.message);
     if (!res.headersSent) {
